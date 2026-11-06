@@ -8,7 +8,7 @@ from llm.optim import AdamW
 
 BLOCK_SIZE = 64
 BATCH_SIZE = 32
-STEPS      = 7000
+STEPS      = 2000
 MAX_LR     = 3e-3
 EVAL_EVERY = 250
 

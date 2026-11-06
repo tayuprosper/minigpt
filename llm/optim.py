@@ -22,11 +22,12 @@ class AdamW:
         b1, b2 = self.beta1, self.beta2
         for p, m, v in zip(self.params, self.m, self.v):
             if p.grad is None:
-                continue    
-        m[:] = b1 * m + (1 - b1) * p.grad
-        v[:] = b2 * v + (1 - b2) * p.grad ** 2
-        m_hat = m / (1 - b1 ** self.t)
-        v_hat = v / (1 - b2 ** self.t)
-        if p.data.ndim >= 2:
-            p.data -= self.lr * self.weight_decay * p.data
-        p.data -= self.lr * m_hat / (np.sqrt(v_hat) + self.eps)
+                continue
+
+            m[:] = b1 * m + (1 - b1) * p.grad
+            v[:] = b2 * v + (1 - b2) * p.grad ** 2
+            m_hat = m / (1 - b1 ** self.t)
+            v_hat = v / (1 - b2 ** self.t)
+            if p.data.ndim >= 2:
+                p.data -= self.lr * self.weight_decay * p.data
+            p.data -= self.lr * m_hat / (np.sqrt(v_hat) + self.eps)
