@@ -41,6 +41,30 @@ class Module:
         return self.forward(*args)
 
 
+    def modules(self):
+        """
+        This module and every module it contains, recursively.
+        """
+        
+        found = [self]
+        
+        for value in self.__dict__.values():
+            items = value if isinstance(value, list) else [value]
+            for item in items:
+                if isinstance(item, Module):
+                    found += item.modules()
+        return found
+    
+    def train(self):
+        for m in self.modules():
+            m.training = True
+                
+    def eval(self):
+        for m in self.modules():
+            m.training = False
+            
+            
+
 class Linear(Module):
     # y = x @ W + b
 
@@ -118,3 +142,20 @@ class Embedding(Module):
     def forward(self, idx):
         return embedding_lookup(self.weight, np.asarray(idx))
 
+class Dropout(Module):
+    """  
+    While training: zero a random fraction p of the elements of the input tensor. Scale the remaining elements by 1/(1-p) to keep the expected sum the same.
+    """
+    
+    def __init__(self, p):
+        self.p = p
+        self.training = True
+        
+    def forward(self, x):
+        if not self.training or self.p == 0.0:
+            return x
+        keep = RNG.random(size=x.data.shape) >= self.p
+        mask = keep.astype(np.float32) / (1.0 - self.p)
+        return x * Tensor(mask)
+    
+        

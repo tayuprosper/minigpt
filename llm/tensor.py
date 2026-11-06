@@ -151,12 +151,13 @@ class Tensor:
             other._add_grad(np.swapaxes(self.data, -1, -2) @ g)
         out._backward = _backward
         return out
+    
     def reshape(self, *shape):
         out = Tensor(self.data.reshape(*shape), (self,), "reshape")
 
         def _backward():
             self._add_grad(out.grad.reshape(self.shape))
-            out._backward = _backward
+        out._backward = _backward
         return out
 
     
@@ -164,7 +165,7 @@ class Tensor:
         out = Tensor(self.data.transpose(*axes), (self,), "transpose")
         def _backward():
             self._add_grad(out.grad.transpose(*np.argsort(axes)))
-            out._backward = _backward
+        out._backward = _backward
         return out
 
 def numerical_grad(f, x, eps=1e-6):
