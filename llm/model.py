@@ -9,7 +9,7 @@ class GPTConfig:
     block_size: int = 64
     n_layer: int = 4
     n_head: int = 4
-    n_embd: int = 64
+    n_embd: int = 128
     dropout: float = 0.2
     
 class GPT(Module):

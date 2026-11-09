@@ -8,12 +8,12 @@ from llm.optim import AdamW
 
 BLOCK_SIZE = 64
 BATCH_SIZE = 32
-STEPS      = 2000
+STEPS      = 5000
 MAX_LR     = 3e-3
 EVAL_EVERY = 250
 
 
-text = open("data/fables.txt", encoding="utf-8").read()
+text = open("data/shakespeare.txt", encoding="utf-8").read()
 tok  = CharTokenizer(text)
 data = np.array(tok.encode(text))
 n    = int(0.9 * len(data))
@@ -25,8 +25,7 @@ def get_batch(split, rng):
     starts = rng.integers(0, len(split) - BLOCK_SIZE - 1, size=BATCH_SIZE) 
     x = np.stack([split[s:s+BLOCK_SIZE] for s in starts])
     y = np.stack([split[s+1:s+BLOCK_SIZE+1] for s in starts])
-    return x, y
-
+    return x, y 
 
 def get_lr(step, warmup=100, min_ratio=0.1):
     if step < warmup:
